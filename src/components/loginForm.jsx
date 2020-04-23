@@ -30,7 +30,7 @@ class LoginForm extends Form {
         this.setState({data:{username: "",password:""}})
         toast("welcome!")
          const { state } = this.props.location;
-        window.location = state ? state.from.pathname : "/";
+        window.location = state ? state.from.pathname : '/movies-app';
         }catch(ex){
             if(ex.response && ex.response.status === 400){
              const error = ex.response.data;

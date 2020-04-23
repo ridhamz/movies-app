@@ -32,7 +32,7 @@ class RegistreForm extends Form {
      this.setState({data:{username: "", name: "", password: ""}})
      loginWithJwt(response.headers['x-auth-token']);
      toast('User added successfully .');
-     window.location = '/';
+     window.location = '/movies-app';
      }catch(ex){
        if(ex.response && ex.response.status === 400){
          /*

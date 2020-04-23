@@ -31,7 +31,7 @@ class App extends Component {
         <NavBar user={this.state.user} />
         <main className="container">
           <Switch>
-            <Route path="/movies-app" exact component={Movies} />
+            <Route path="/movies-app" component={Movies} />
             <Route path="/register" component={RegistreForm} />
             <Route path="/login" component={LoginForm} />
             {/*
