@@ -26,7 +26,7 @@ class MoviesTable extends Component {
      { path: 'title', label: 'Title', content: movie => <Link to={`/movies/${movie._id}`}>{movie.title}</Link>},
      { path: 'genre.name', label: 'Genre'},
      { path: 'numberInStock', label: 'Stock'},
-     { path: 'dailyRentalRate', label: 'Rate'},
+     //{ path: 'dailyRentalRate', label: 'Rate'},
      {
         key: 'like', 
         content:movie => <Like 
