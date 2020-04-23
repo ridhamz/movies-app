@@ -11,6 +11,7 @@ const ListGroup = (props) => {
     return (
     <ul className="pagination">
       { items.map(item => (
+          item.name !== 'Thriller' && 
           <li 
              key={item[valueProperty]}
              className={
@@ -24,6 +25,7 @@ const ListGroup = (props) => {
              {item[textProperty]}
              </a>
           </li>
+         
       )) }
  </ul>
     )

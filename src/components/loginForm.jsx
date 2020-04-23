@@ -29,8 +29,8 @@ class LoginForm extends Form {
          await login(username, password);
         this.setState({data:{username: "",password:""}})
         toast("welcome!")
-         const { state } = this.props.location;
-        window.location = state ? state.from.pathname : '/movies-app';
+         //const { state } = this.props.location;
+        window.location = '/movies-app';
         }catch(ex){
             if(ex.response && ex.response.status === 400){
              const error = ex.response.data;
