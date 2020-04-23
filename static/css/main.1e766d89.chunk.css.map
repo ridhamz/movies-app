@@ -1,0 +1,1 @@
+{"version":3,"sources":["index.css","App.css"],"names":[],"mappings":"AAAA,KACE,QAAS,CACT,gBAAmB,CACnB,sBAAuB,CCFvB,SDGF,CCAA,QACE,kBACF","file":"main.1e766d89.chunk.css","sourcesContent":["body {\n  margin: 0;\n  padding: 20px 0 0 0;\n  font-family: sans-serif;\n}\n","body{\n  padding: 0;\n}\n\n.navbar{\n  margin-bottom: 30px;\n}"]}
