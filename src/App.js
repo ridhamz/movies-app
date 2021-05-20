@@ -1,67 +1,100 @@
-import React, { Component } from "react";
-import Movies from "./components/movies";
+import React, { useContext } from "react";
+
 import { Route, Redirect, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Rentals from "./components/rentals";
-import Customers from "./components/customers";
-import NotFound from "./components/notFound";
-import MovieForm from "./components/movieForm";
+
 import NavBar from "./components/navBar";
 import LoginForm from "./components/loginForm";
-import RegistreForm from "./components/registerForm";
-import Logout from "./components/logout";
+
 import "react-toastify/dist/ReactToastify.css";
 import "./App.css";
-import { getCurrentUser } from "./services/authService";
-import ProtectedRoute from "./components/common/protectedRoute";
 
-class App extends Component {
-  state = {};
+import { AuthContext } from "./shared/context/auth-context";
+import Admin from "./components/admin";
+import Students from "./components/admin/students";
+import EditUser from "./components/admin/editUser";
+import Teachers from "./components/admin/teachers";
+import ListPFE from "./components/admin/pfes";
+import Years from "./components/admin/years";
+import EditYear from "./components/admin/editYear";
 
-  componentDidMount() {
-    const user = getCurrentUser();
-    console.log(user);
-    this.setState({ user });
-  }
-  render() {
-    const { user } = this.state;
-    return (
-      <React.Fragment>
-        <ToastContainer />
-        <NavBar user={this.state.user} />
-        <main className="container">
+import Student from "./components/student/index";
+import AddPFE from "./components/student/addPFE";
+import EditPFE from "./components/student/editPFE";
+import Profile from "./components/common/profile";
+import EditProfile from "./components/common/editProfile";
+import ChangePassword from "./components/common/changePassword";
+
+import Teacher from "./components/teacher/index";
+
+function App() {
+  const auth = useContext(AuthContext);
+  let routes;
+  if (auth.token) {
+    switch (auth.user?.role) {
+      case "admin":
+        routes = (
           <Switch>
-            <Route path="/movies-app" component={Movies} />
-            <Route path="/register" component={RegistreForm} />
-            <Route path="/login" component={LoginForm} />
-            {/*
-        this is first way to protect react router
-       <Route 
-            path="/movies/:id" 
-            render={props => {
-              if(!user) return <Redirect to="/login" />
-              return <MovieForm {...props}  />
-              }}
-         />
-         */}
-            {/* this is second way : */}
-
-            <ProtectedRoute path="/movies/:id" component={MovieForm} />
-            <Route
-              path="/movies"
-              render={(props) => <Movies {...props} user={user} />}
-            />
-            <Route path="/customers" component={Customers} />
-            <Route path="/rentals" component={Rentals} />
-            <Route path="/logout" component={Logout} />
-            <Route path="/not-found" component={NotFound} />
-            <Redirect from="/" exact to="/movies" />
-            <Redirect to="/movies" />
+            {/*Admin routes*/}
+            <Route path="/" component={Admin} exact />
+            <Route path="/admin" component={Admin} exact />
+            <Route path="/students" component={Students} exact />
+            <Route path="/teachers" component={Teachers} exact />
+            <Route path="/list-pfe" component={ListPFE} exact />
+            <Route path="/years" component={Years} exact />
+            <Route path="/edit-user/:id" component={EditUser} exact />
+            <Route path="/edit-year/:id" component={EditYear} exact />
+            <Redirect to="/" />
           </Switch>
-        </main>
-      </React.Fragment>
+        );
+        break;
+
+      case "student":
+        routes = (
+          <Switch>
+            {/*Student routes*/}
+            <Route path="/" component={Student} exact />
+            <Route path="/student" component={Student} exact />
+            <Route path="/add-pfe" component={AddPFE} exact />
+            <Route path="/edit-pfe/:id" component={EditPFE} exact />
+            <Route path="/profile" component={Profile} exact />
+            <Route path="/edit-profile" component={EditProfile} exact />
+            <Route path="/change-password" component={ChangePassword} exact />
+            <Redirect to="/" />
+          </Switch>
+        );
+        break;
+
+      case "teacher":
+        routes = (
+          <Switch>
+            {/*Student routes*/}
+            <Route path="/" component={Teacher} exact />
+            <Route path="/teacher" component={Teacher} exact />
+            <Route path="/profile" component={Profile} exact />
+            <Route path="/edit-profile" component={EditProfile} exact />
+            <Route path="/change-password" component={ChangePassword} exact />
+            <Redirect to="/" />
+          </Switch>
+        );
+        break;
+    }
+  } else {
+    routes = (
+      <Switch>
+        <Route path="/login" component={LoginForm} />
+        <Route path="/" component={LoginForm} />
+        <Redirect to="/" />
+      </Switch>
     );
   }
+  return (
+    <React.Fragment>
+      <ToastContainer />
+      <NavBar />
+      <main className="container">{routes}</main>
+    </React.Fragment>
+  );
 }
 
 export default App;

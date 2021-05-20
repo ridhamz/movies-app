@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { AuthContext } from "../shared/context/auth-context";
 
-const NavBar = ({ user }) => {
+const NavBar = () => {
+  const auth = useContext(AuthContext);
+  
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
       <Link className="navbar-brand btn  btn-sm m-0" to="/">
-        MoviesApp
+        PFE Platforme 
       </Link>
       <button
         className="navbar-toggler"
@@ -20,24 +23,38 @@ const NavBar = ({ user }) => {
       </button>
       <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div className="navbar-nav">
+
+        <React.Fragment>
+            <NavLink className="nav-item nav-link" to="/">
+            Home
+          </NavLink>
+          </React.Fragment>
        
             <React.Fragment>
-            <NavLink className="nav-item nav-link" to="/movies">
-            Movies
-           </NavLink>
+            {auth.user && auth.user.role=="admin" &&<NavLink className="nav-item nav-link" to="/admin">
+            Dashboard
+           </NavLink>}
             </React.Fragment>
-            { user &&
-           <NavLink className="nav-item nav-link" to="/logout">
+
+        
+
+            <React.Fragment>
+            {auth.user && auth.user.role !=="admin" &&
+            <NavLink className="nav-item nav-link" to={"/profile"}>
+             Profile
+           </NavLink>}
+            </React.Fragment>
+
+
+            { auth.user &&
+           <NavLink className="nav-item nav-link" to="/logout" onClick={()=>auth.logout()}>
             Logout
            </NavLink>
           }
-          { !user &&
+          { !auth.user &&
             <React.Fragment>
             <NavLink className="nav-item nav-link" to="/login">
             Login
-          </NavLink>
-          <NavLink className="nav-item nav-link" to="/register">
-            Register
           </NavLink>
           </React.Fragment>
           }

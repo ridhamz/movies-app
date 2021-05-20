@@ -1,58 +1,60 @@
-import React  from 'react';
-import Joi from 'joi-browser';
-import Form from './common/form';
-import { Redirect } from 'react-router-dom';
-import { login, getCurrentUser } from '../services/authService';
+import React, { useContext, useState }  from 'react';
+import { Redirect, useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AuthContext } from '../shared/context/auth-context';
+import { useHttpClient } from "../shared/hooks/http-hook";
 
-class LoginForm extends Form {
+function LoginForm() {
 
-    state = {
-        data: {username: '', password: ''},
-        errors: {}
-    }
+    const auth = useContext(AuthContext);
+    const history = useHistory();
+    const { sendRequest, isLoading, error, setError } = useHttpClient();
 
-    schema = {
-        username: Joi.string()
-            .required()
-            .label('Username'),
-        password: Joi.string()
-            .required()
-            .label('Password')
-    }
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
 
-   
+    const  onHandleSubmit = async (e)=>{
+        e.preventDefault();
+       
+        sendRequest("http://localhost:5000/api/auth",
+         "POST", JSON.stringify({email, password}), {
+          'Content-Type': 'application/json'
+        }).then((res)=> {
+          console.log(res)
+          auth.login(res.user, res.token)
+          const {role} = res.user;
 
-    doSubmit = async() =>{
-        const { username, password } = this.state.data;
-        try{
-         await login(username, password);
-        this.setState({data:{username: "",password:""}})
-        toast("welcome!")
-         //const { state } = this.props.location;
-        window.location = '/movies-app';
-        }catch(ex){
-            if(ex.response && ex.response.status === 400){
-             const error = ex.response.data;
-             toast.error(error);
-            }
-        }
-    }
+          if(role == "admin") return history.push("/admin")
+          if(role == "student") return history.push("/sudent")
+          if(role == "teacher") return history.push("/techer")
+
+        }).catch(err => toast.error("Invalid Email or Password") )}
     
-   
-    render() { 
-        if(getCurrentUser()) return <Redirect ro="/" />;
+
         return ( 
-           <div>
-             <h1>Login</h1>
-               <form onSubmit={this.handleSubmit}>
-                {this.renderInput('username','Username','text')}
-                {this.renderInput('password','Password','password')}
-                {this.renderButton('Login')}       
-               </form>
+     <div className="col-md-8" style={{margin:'auto'}}>
+     <h1>Login</h1>
+     <form onSubmit={onHandleSubmit}>
+     <div class="mb-3">
+     <label for="exampleInputEmail1" class="form-label">Email address</label>
+      <input type="email" class="form-control" 
+         value={email}
+         onChange={e => setEmail(e.target.value)}
+     />
+    
+     </div>
+     <div class="mb-3">
+     <label for="exampleInputPassword1" class="form-label">Password</label>
+     <input type="password" class="form-control" 
+      value={password}
+      onChange={e => setPassword(e.target.value)} />
+     </div>
+  
+      <button type="submit" class="btn btn-primary">Submit</button>
+</form>
            </div>
          );
     }
-}
+
  
 export default LoginForm;
